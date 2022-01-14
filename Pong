@@ -1,0 +1,121 @@
+
+"""
+Created on Tue Jan 11 23:07:55 2022
+
+@author: Nick
+"""
+
+
+import turtle
+import winsound
+
+window = turtle.Screen()
+window.title("Pong by Nick")
+window.bgcolor("black") #creates the screen for the game
+window.setup(width = 800, height = 600)
+window.tracer(0)
+
+#the following blocks create the paddles and the ball and sets the 
+
+#paddle 1
+p1 = turtle.Turtle()
+p1.speed(0)
+p1.shape("square")
+p1.color("red")
+p1.shapesize(stretch_wid = 5, stretch_len = 1)
+p1.penup()
+p1.goto(-350,0)
+
+#paddle 2
+p2 = turtle.Turtle()
+p2.speed(0)
+p2.shape("square")
+p2.color("red")
+p2.shapesize(stretch_wid = 6, stretch_len = 1)
+p2.penup()
+p2.goto(350,0)
+
+#ball
+ball = turtle.Turtle()
+ball.speed(0)
+ball.shape("square")
+ball.color("white")
+ball.penup()
+ball.goto(0,0)
+ball.dx = 0.75
+ball.dy = 0.75
+
+#score board
+pen  = turtle.Turtle()
+pen.speed(0)
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0,260)
+
+#scores
+score1 = 0
+score2 = 0
+
+#moves the paddles
+def p1_up():
+    y = p1.ycor()
+    y = y+30
+    p1.sety(y)
+def p1_down():
+    y = p1.ycor()
+    y = y-30
+    p1.sety(y)
+
+def p2_up():
+    y = p2.ycor()
+    y = y+30
+    p2.sety(y)
+def p2_down():
+    y = p2.ycor()
+    y = y-30
+    p2.sety(y)
+
+window.listen()
+window.onkeypress(p1_up,"w")
+window.onkeypress(p1_down,"s")
+window.onkeypress(p2_up,"Up")
+window.onkeypress(p2_down,"Down")
+while True:
+    window.update()
+    ball.setx(ball.xcor()+ball.dx)
+    ball.sety(ball.ycor()+ball.dy)
+    if ball.ycor() >290:
+        ball.sety(290)
+        ball.dy = ball.dy * -1
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC) # if ball hits the ceiling or floor, reverse it
+    if ball.ycor() <-290:
+        ball.sety(-290)
+        ball.dy = ball.dy * -1
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
+    if ball.xcor() >390:
+        ball.goto(0,0)
+        score1 = score1 + 1
+        pen.clear()
+        ball.dx = 0.75
+        ball.dy = 0.75 #if it goes out of bounds add to score and restart
+        pen.write("Player 1: {} Player 2: {}".format(score1,score2), align = "center", font = ("Courier", 24,"normal"))
+        ball.dy = ball.dx * -1
+    if ball.xcor() <-390:
+        ball.goto(0,0)
+        score2 +=1
+        pen.clear()
+        ball.dx = 0.75#if it goes out of bounds add to score and restart
+        ball.dy = 0.75
+        pen.write("Player 1: {} Player 2: {}".format(score1,score2), align = "center", font = ("Courier", 24,"normal"))
+        ball.dy = ball.dx * -1
+    if (ball.xcor() > 340 and ball.xcor() < 350) and (ball.ycor() < p2.ycor() + 50 and ball.ycor() >p2.ycor() - 50):
+        ball.setx(340) #if the ball hits a paddle send the ball back
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
+        ball.dx = ball.dx * -1
+    if (ball.xcor() < -340 and ball.xcor() > -350) and (ball.ycor() < p1.ycor() + 50 and ball.ycor() >p1.ycor() - 50):
+        ball.setx(-340)
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
+        ball.dx = ball.dx * -1
+        
+        
